@@ -5,7 +5,7 @@ import Form from '../components/form';
 import { useState } from 'react';
 
 export default function Home() {
-    const [visible, setVisible] = useState(true);
+    const [visible, setVisible] = useState(false);
     const handler = () => {
         setVisible(!visible);
     };
