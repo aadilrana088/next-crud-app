@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleChangeAction } from '../redux/reducer';
 export default function Table() {
     const { isLoading, isError, data, error } = useQuery('users', getUsers);
-    // console.log(data)
+    console.log(data);
     if (isLoading) return <div>Employee is Loading...</div>;
     if (isError) return <div>Got Error {error}</div>;
     console;

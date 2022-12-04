@@ -1,26 +1,51 @@
 import { useReducer } from 'react';
 import { BiPlus } from 'react-icons/bi';
-import Bug from './bug';
 import Success from './success';
+import Bug from './bug';
+import { useQueryClient, useMutation } from 'react-query';
+import { addUser, getUsers } from '../lib/helper';
 
 const formReducer = (state, event) => {
     return {
         ...state,
-        [event.target.name]: [event.target.value],
+        [event.target.name]: event.target.value,
     };
 };
 
 export default function AddUserForm() {
+    const queryClient = useQueryClient();
     const [formData, setFormData] = useReducer(formReducer, {});
+    const addMutation = useMutation(addUser, {
+        onSuccess: () => {
+            queryClient.prefetchQuery('users', getUsers);
+        },
+    });
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (Object.keys(formData).length == 0)
-            return console.log('FormData is empty');
-        console.log(formData);
+            return console.log("Don't have Form Data");
+        let { firstname, lastname, email, salary, date, status } = formData;
+
+        const model = {
+            name: `${firstname} ${lastname}`,
+            avatar: `https://randomuser.me/api/portraits/men/${Math.floor(
+                Math.random() * 10
+            )}.jpg`,
+            email,
+            salary,
+            date,
+            status: status ?? 'Active',
+        };
+
+        addMutation.mutate(model);
     };
 
-    // if (Object.keys(formData).length > 0) return <Bug message={'Error'}></Bug>;
+    if (addMutation.isLoading) return <div>Loading!</div>;
+    if (addMutation.isError)
+        return <Bug message={addMutation.error.message}></Bug>;
+    if (addMutation.isSuccess)
+        return <Success message={'Added Successfully'}></Success>;
 
     return (
         <form
@@ -30,46 +55,46 @@ export default function AddUserForm() {
             <div className="input-type">
                 <input
                     type="text"
+                    onChange={setFormData}
                     name="firstname"
                     className="border w-full px-5 py-3 focus:outline-none rounded-md"
                     placeholder="FirstName"
-                    onChange={setFormData}
                 />
             </div>
             <div className="input-type">
                 <input
                     type="text"
+                    onChange={setFormData}
                     name="lastname"
                     className="border w-full px-5 py-3 focus:outline-none rounded-md"
                     placeholder="LastName"
-                    onChange={setFormData}
                 />
             </div>
             <div className="input-type">
                 <input
                     type="text"
+                    onChange={setFormData}
                     name="email"
                     className="border w-full px-5 py-3 focus:outline-none rounded-md"
                     placeholder="Email"
-                    onChange={setFormData}
                 />
             </div>
             <div className="input-type">
                 <input
                     type="text"
+                    onChange={setFormData}
                     name="salary"
                     className="border w-full px-5 py-3 focus:outline-none rounded-md"
                     placeholder="Salary"
-                    onChange={setFormData}
                 />
             </div>
             <div className="input-type">
                 <input
                     type="date"
+                    onChange={setFormData}
                     name="date"
                     className="border px-5 py-3 focus:outline-none rounded-md"
                     placeholder="Salary"
-                    onChange={setFormData}
                 />
             </div>
 
@@ -77,11 +102,11 @@ export default function AddUserForm() {
                 <div className="form-check">
                     <input
                         type="radio"
+                        onChange={setFormData}
                         value="Active"
                         id="radioDefault1"
                         name="status"
                         className="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300  bg-white checked:bg-green-500 checked:border-green-500 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                        onChange={setFormData}
                     />
                     <label
                         htmlFor="radioDefault1"
@@ -93,11 +118,11 @@ export default function AddUserForm() {
                 <div className="form-check">
                     <input
                         type="radio"
+                        onChange={setFormData}
                         value="Inactive"
                         id="radioDefault2"
                         name="status"
                         className="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300  bg-white checked:bg-green-500 checked:border-green-500 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                        onChange={setFormData}
                     />
                     <label
                         htmlFor="radioDefault2"
@@ -108,7 +133,10 @@ export default function AddUserForm() {
                 </div>
             </div>
 
-            <button className="flex justify-center text-md w-2/6 bg-green-500 text-white px-4 py-2 border rounded-md hover:bg-gray-50 hover:border-green-500 hover:text-green-500">
+            <button
+                type="submit"
+                className="flex justify-center text-md w-2/6 bg-green-500 text-white px-4 py-2 border rounded-md hover:bg-gray-50 hover:border-green-500 hover:text-green-500"
+            >
                 Add{' '}
                 <span className="px-1">
                     <BiPlus size={24}></BiPlus>
