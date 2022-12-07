@@ -3,16 +3,7 @@ import { BiBrush } from 'react-icons/bi';
 import Bug from './bug';
 import Success from './success';
 
-const formReducer = (state, event) => {
-    return {
-        ...state,
-        [event.target.name]: [event.target.value],
-    };
-};
-
-export default function UpdateUserForm() {
-    const [formData, setFormData] = useReducer(formReducer, {});
-
+export default function UpdateUserForm({ formId, formData, setFormData }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (Object.keys(formData).length == 0)
@@ -20,7 +11,7 @@ export default function UpdateUserForm() {
         console.log(formData);
     };
 
-    if (Object.keys(formData).length > 0) return <Bug message={'Error'}></Bug>;
+    // if (Object.keys(formData).length > 0) return <Bug message={'Error'}></Bug>;
 
     return (
         <form

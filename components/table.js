@@ -2,10 +2,10 @@ import { BiEdit, BiTrashAlt } from 'react-icons/bi';
 import { getUsers } from '../lib/helper';
 import { useQuery } from 'react-query';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleChangeAction } from '../redux/reducer';
+import { toggleChangeAction, updateAction } from '../redux/reducer';
 export default function Table() {
     const { isLoading, isError, data, error } = useQuery('users', getUsers);
-    console.log(data);
+    // console.log(data);
     if (isLoading) return <div>Employee is Loading...</div>;
     if (isError) return <div>Got Error {error}</div>;
     console;
@@ -42,13 +42,16 @@ export default function Table() {
     );
 }
 
-function Tr({ id, name, avatar, email, salary, date, status }) {
+function Tr({ _id, name, avatar, email, salary, date, status }) {
     const visible = useSelector((state) => state.app.client.toggleForm);
     const dispatch = useDispatch();
     // console.log(visible);
     const onUpdate = () => {
         dispatch(toggleChangeAction());
-        console.log(visible);
+        if (visible) {
+            dispatch(updateAction(_id));
+        }
+        // console.log(visible);
     };
     return (
         <tr className="bg-gray-50 text-center">
