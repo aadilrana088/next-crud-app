@@ -7,6 +7,7 @@ import { addUser, getUsers } from '../lib/helper';
 
 export default function AddUserForm({ formData, setFormData }) {
     const queryClient = useQueryClient();
+
     const addMutation = useMutation(addUser, {
         onSuccess: () => {
             queryClient.prefetchQuery('users', getUsers);

@@ -5,7 +5,7 @@ import { useReducer } from 'react';
 const formReducer = (state, event) => {
     return {
         ...state,
-        [event.target.name]: [event.target.value],
+        [event.target.name]: event.target.value,
     };
 };
 export default function Form() {
