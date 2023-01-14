@@ -58,7 +58,12 @@ function Tr({ _id, name, avatar, email, salary, date, status }) {
         // console.log(visible);
     };
     const onDelete = () => {
+        if (visible) {
+            dispatch(toggleChangeAction());
+            dispatch(deleteAction(_id));
+        }
         if (!visible) {
+            // console.log('worked');
             dispatch(deleteAction(_id));
         }
     };
